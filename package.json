@@ -18,12 +18,14 @@
     "clsx": "^2.1.1",
     "globals": "^16.3.0",
     "i18next": "^25.3.2",
+    "jotai": "^2.13.1",
     "leva": "^0.9.35",
     "lucide-react": "^0.537.0",
     "mind-ar": "^1.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^15.6.1",
+    "react-webcam": "^7.2.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
     "three": "0.150.1",
@@ -44,8 +46,10 @@
     "eslint-plugin-react-refresh": "^0.4.16",
     "prettier": "^3.3.3",
     "tw-animate-css": "^1.3.6",
+    "typescript": "^5.9.2",
     "vite": "^5.4.19",
     "vite-plugin-html": "^3.2.0",
+    "vite-plugin-worker": "^1.0.5",
     "vitest": "^1.0.0"
   }
 }

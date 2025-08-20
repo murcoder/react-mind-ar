@@ -2,6 +2,11 @@ import React, {useState} from 'react';
 import MindARThreeViewer from '../mindar-three-viewer';
 import {Button} from "@/components/ui/button"
 
+/**
+ * deprecated: Use AR.jsx instead
+ * @returns {Element}
+ * @constructor
+ */
 export const MindAR = () => {
   const [started, setStarted] = useState(null);
 
