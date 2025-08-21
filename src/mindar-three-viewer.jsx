@@ -1,38 +1,65 @@
-import React, { useEffect, useRef } from 'react';
-import {MindARThree} from 'mind-ar/dist/mindar-image-three.prod.js';
-import * as THREE from 'three';
+// mindar-three-viewer.jsx
+import React, {useEffect, useState} from "react";
+import {Canvas, useThree} from "@react-three/fiber";
+import {MindARThree} from "mind-ar/dist/mindar-image-three.prod.js";
 
-export default () => {
-  const containerRef = useRef(null);
+function AnchorContent ({anchor}) {
+  return (
+    <primitive object={anchor.group}>
+      <mesh>
+        <planeGeometry args={[1, 0.55]}/>
+        <meshBasicMaterial color="cyan" transparent opacity={0.5}/>
+      </mesh>
+    </primitive>
+  );
+}
+
+function ARScene () {
+  const {gl, scene, camera} = useThree();
+  const [anchor, setAnchor] = useState(null);
 
   useEffect(() => {
     const mindarThree = new MindARThree({
-      container: containerRef.current,
+      container: gl.domElement.parentElement,
       imageTargetSrc: "./card.mind",
+      renderer: gl,
+      scene,
+      camera,
     });
-    const {renderer, scene, camera} = mindarThree;
+
     const anchor = mindarThree.addAnchor(0);
-    const geometry = new THREE.PlaneGeometry(1, 0.55);
-    const material = new THREE.MeshBasicMaterial( {color: 0x00ffff, transparent: true, opacity: 0.5} );
-    const plane = new THREE.Mesh( geometry, material );
-    anchor.group.add(plane);
+    setAnchor(anchor);
+
+    anchor.onTargetFound = () => console.log("Target found! 🎉");
+    anchor.onTargetLost = () => console.log("Target lost! 😢");
 
     mindarThree.start();
-    renderer.setAnimationLoop(() => {
-      renderer.render(scene, camera);
+
+    gl.setAnimationLoop(() => {
+      gl.render(scene, camera);
     });
 
     return () => {
-      renderer.setAnimationLoop(null);
-      if (mindarThree && mindarThree.controller) {
-        mindarThree.stop();
-      }
-    }
-  }, []);
+      // TODO - mesh is not visible or not be drawn
+      mindarThree.stop();
+      gl.setAnimationLoop(null);
+    };
+  }, [gl, scene, camera]);
 
   return (
-    <div style={{width: "100%", height: "100%"}} ref={containerRef}>
-    </div>
-  )
+    <>
+      <ambientLight/>
+      <pointLight position={[5, 5, 5]}/>
+      {anchor && <AnchorContent anchor={anchor}/>}
+    </>
+  );
 }
 
+export default function MindARThreeViewer () {
+  return (
+      <Canvas
+        style={{ position: "absolute", minWidth: "100vw", minHeight: "100vh" }}>
+        <ARScene/>
+      </Canvas>
+  );
+}
