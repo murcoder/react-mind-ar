@@ -1,4 +1,3 @@
-// mindar-three-viewer.jsx
 import React, {useEffect, useState} from "react";
 import {Canvas, useThree} from "@react-three/fiber";
 import {MindARThree} from "mind-ar/dist/mindar-image-three.prod.js";
@@ -40,7 +39,7 @@ function ARScene () {
     });
 
     return () => {
-      // TODO - mesh is not visible or not be drawn
+      // TODO - mesh is not visible or drawn
       mindarThree.stop();
       gl.setAnimationLoop(null);
     };
