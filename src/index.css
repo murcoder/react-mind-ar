@@ -10,6 +10,13 @@
 
 body {
   margin: 0;
+  position: relative
+}
+
+html,
+body
+{
+  overflow: hidden;
 }
 
 @theme inline {
