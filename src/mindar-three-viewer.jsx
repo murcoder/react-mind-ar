@@ -45,10 +45,7 @@ function ARScene () {
   useEffect(() => {
     const mindarThree = new MindARThree({
       container: document.body,
-      imageTargetSrc: "./card.mind",
-      renderer: gl,
-      scene: scene,
-      camera: camera,
+      imageTargetSrc: "./targets/card.mind"
     });
 
     const newAnchor = mindarThree.addAnchor(0);
