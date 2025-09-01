@@ -13,7 +13,7 @@ export default function LanguageSwitcher() {
         id="language-select"
         onChange={handleChangeLanguage}
         defaultValue={i18n.language}
-        className="text-white bg-inherit uppercase">
+        className="text-white bg-inherit uppercase hover:underline cursor-pointer">
         <option value="en">English</option>
         <option value="de">Deutsch</option>
       </select>

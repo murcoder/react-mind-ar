@@ -1,38 +1,76 @@
-import React, { useEffect, useRef } from 'react';
-import {MindARThree} from 'mind-ar/dist/mindar-image-three.prod.js';
-import * as THREE from 'three';
+import React, {useEffect, useRef, useState} from "react";
+import {Canvas, useThree} from "@react-three/fiber";
+import * as THREE from "three";
+import {MindARThree} from "mind-ar/dist/mindar-image-three.prod.js";
 
-export default () => {
-  const containerRef = useRef(null);
+function ARPlane ({anchor}) {
+  const meshRef = useRef();
+
+  useEffect(() => {
+    if (!anchor) return;
+
+    // Hide plane initially
+    meshRef.current.visible = false;
+
+    // Show/hide when target is found/lost
+    anchor.onTargetFound = () => {
+      console.log("Target found! 🎉")
+      meshRef.current.visible = true;
+    }
+    anchor.onTargetLost = () => {
+      console.log("Target lost! 😢")
+      meshRef.current.visible = false;
+    }
+  }, [anchor]);
+
+  return (
+    <group ref={meshRef}>
+      <mesh>
+        <planeGeometry args={[1, 0.55]}/>
+        <meshBasicMaterial
+          color={0x00ffff}
+          transparent
+          opacity={0.5}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+function ARScene () {
+  const {scene, camera, gl} = useThree();
+  const [anchor, setAnchor] = useState(null);
 
   useEffect(() => {
     const mindarThree = new MindARThree({
-      container: containerRef.current,
+      container: document.body,
       imageTargetSrc: "./card.mind",
+      renderer: gl,
+      scene: scene,
+      camera: camera,
     });
-    const {renderer, scene, camera} = mindarThree;
-    const anchor = mindarThree.addAnchor(0);
-    const geometry = new THREE.PlaneGeometry(1, 0.55);
-    const material = new THREE.MeshBasicMaterial( {color: 0x00ffff, transparent: true, opacity: 0.5} );
-    const plane = new THREE.Mesh( geometry, material );
-    anchor.group.add(plane);
+
+    const newAnchor = mindarThree.addAnchor(0);
+    setAnchor(newAnchor);
 
     mindarThree.start();
-    renderer.setAnimationLoop(() => {
-      renderer.render(scene, camera);
-    });
 
     return () => {
-      renderer.setAnimationLoop(null);
-      if (mindarThree && mindarThree.controller) {
-        mindarThree.stop();
-      }
-    }
-  }, []);
+      mindarThree.stop();
+    };
+  }, [scene, camera, gl]);
 
-  return (
-    <div style={{width: "100%", height: "100%"}} ref={containerRef}>
-    </div>
-  )
+  // TODO - Plane is in the middle of the screen, not on the target
+  return anchor ? <ARPlane anchor={anchor}/> : null;
 }
 
+export default function MindARThreeViewer () {
+  return (
+    <Canvas style={{ position: "absolute", minWidth: "100vw", minHeight: "100vh" }}>
+      <ambientLight intensity={4}/>
+      <directionalLight position={[2.5, 8, 5]} intensity={1.5} castShadow/>
+      <ARScene/>
+    </Canvas>
+  );
+}

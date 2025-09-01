@@ -16,8 +16,8 @@ A boilerplate to integrate Augmented Reality into a React application using [Min
 
 
 ```
-yarn
-yarn dev
+npm i
+npm run dev
 ```
 
 # Screenshot
