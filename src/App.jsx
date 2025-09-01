@@ -1,30 +1,35 @@
 import React, {useState} from "react";
 import NavBar from "@/html/NavBar.jsx";
-import {Button} from "@/components/ui/button.tsx";
-import MindARThreeViewer from "@/mindar-three-viewer.jsx";
+import {ARView, ARAnchor} from "react-three-mind";
 
-function App () {
-  const [started, setStarted] = useState(false);
+export default function App () {
 
   return (
     <>
       <NavBar/>
-
-      {/* Top-centered button */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000]">
-        <Button
-          variant={"outline"}
-          className={"cursor-pointer font-bold"}
-          onClick={() => setStarted(!started)}
-        >
-          {started ? "Stop" : "Enter AR"}
-        </Button>
-      </div>
-
       {/* AR container */}
-      {started && <MindARThreeViewer/>}
+      <ARView
+        imageTargets="/targets/card.mind"
+        filterMinCF={0.1}
+        filterBeta={1000}
+        missTolerance={5}
+        warmupTolerance={5}
+        flipUserCamera={true}
+      >
+        <ambientLight/>
+        <pointLight position={[10, 10, 10]}/>
+        <ARAnchor
+          target={0}
+          onAnchorFound={() => console.log("Target found! 🎉")}
+          onAnchorLost={() => console.log("Target lost! 😢")}
+        >
+          {/*<Experience />*/}
+          <mesh position={[0, 0, 0]}>
+            <planeGeometry/>
+            <meshNormalMaterial/>
+          </mesh>
+        </ARAnchor>
+      </ARView>
     </>
   );
 }
-
-export default App;

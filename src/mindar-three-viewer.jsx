@@ -38,17 +38,14 @@ function ARPlane ({anchor}) {
   );
 }
 
-function ARScene () {
+export default function ARScene () {
   const {scene, camera, gl} = useThree();
   const [anchor, setAnchor] = useState(null);
 
   useEffect(() => {
     const mindarThree = new MindARThree({
       container: document.body,
-      imageTargetSrc: "./card.mind",
-      renderer: gl,
-      scene: scene,
-      camera: camera,
+      imageTargetSrc: "./card.mind"
     });
 
     const newAnchor = mindarThree.addAnchor(0);
@@ -63,14 +60,4 @@ function ARScene () {
 
   // TODO - Plane is in the middle of the screen, not on the target
   return anchor ? <ARPlane anchor={anchor}/> : null;
-}
-
-export default function MindARThreeViewer () {
-  return (
-    <Canvas style={{ position: "absolute", minWidth: "100vw", minHeight: "100vh" }}>
-      <ambientLight intensity={4}/>
-      <directionalLight position={[2.5, 8, 5]} intensity={1.5} castShadow/>
-      <ARScene/>
-    </Canvas>
-  );
 }
